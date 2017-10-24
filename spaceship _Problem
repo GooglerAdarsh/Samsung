@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+const int MAX=10;
+
+int N,M,arr[MAX][MAX],dp[MAX][MAX][2][2];
+
+int cal(int row,int col,int used,int K)
+{
+	if(row>=M)
+	return 0;
+	if(dp[row][col][used][K]!=-1)
+	return dp[row][col][used][K];
+	int res=0;
+	if(K)
+	{
+		res=max(res,(arr[row+1][col]==1?1:0)+cal(row+1,col,1,K-1));
+		if(col-1>=1)
+		res=max(res,(arr[row+1][col-1]==1?1:0)+cal(row+1,col-1,1,K-1));
+		if(col+1<=M)
+		res=max(res,(arr[row+1][col+1]==1?1:0)+cal(row+1,col+1,1,K-1));
+		return dp[row][col][used][K]=res;
+    }
+	if(arr[row+1][col]!=2)
+	res=max(res,arr[row+1][col]+cal(row+1,col,used,K));
+	if(col-1>=1&&arr[row+1][col-1]!=2)
+	res=max(res,arr[row+1][col-1]+cal(row+1,col-1,used,K));
+	if(col+1<=M&&arr[row+1][col+1]!=2)
+	res=max(res,arr[row+1][col+1]+cal(row+1,col+1,used,K));
+	if(used==0)
+	{
+		K=5;
+		res=max(res,(arr[row+1][col]==1?1:0)+cal(row+1,col,1,K-1));
+		if(col-1>=1)
+		res=max(res,(arr[row+1][col-1]==1?1:0)+cal(row+1,col-1,1,K-1));
+		if(col+1<=M)
+		res=max(res,(arr[row+1][col+1]==1?1:0)+cal(row+1,col+1,1,K-1));
+	}
+	return dp[row][col][used][K]=res;
+}
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	memset(dp,-1,sizeof(dp));
+	cin>>N>>M;
+	for(int A=N;A>=1;A--)
+	for(int B=1;B<=M;B++)
+	cin>>arr[A][B];
+	cout<<cal(0,M/2+1,0,0);
+	return 0;
+}
